@@ -29,8 +29,15 @@ export function resolveConfig(options: MetricsDashOptions): ResolvedMetricsDashC
     throw new Error('[MetricsDash SDK] publicSdkKey est requise pour initialiser le SDK.');
   }
 
-  let host = options.host || 'http://localhost:8000';
-  host = host.replace(/\/$/, '');
+  let host = (options.host || 'http://localhost:8000').trim().replace(/\/$/, '');
+
+  if (!/^https?:\/\//i.test(host)) {
+    if (host.startsWith('localhost') || host.startsWith('127.0.0.1')) {
+      host = `http://${host}`;
+    } else {
+      host = `https://${host}`;
+    }
+  }
 
   return {
     publicSdkKey: options.publicSdkKey,
