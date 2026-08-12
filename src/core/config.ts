@@ -24,13 +24,17 @@ export interface ResolvedMetricsDashConfig {
   debug: boolean;
 }
 
-export function resolveConfig(options: MetricsDashOptions): ResolvedMetricsDashConfig {
-  if (!options.publicSdkKey) {
-    throw new Error('[MetricsDash SDK] publicSdkKey est requise pour initialiser le SDK.');
-  }
+export function sanitizeHostUrl(rawHost?: string): string {
+  if (!rawHost) return 'http://localhost:8000';
 
-  let host = (options.host || 'http://localhost:8000').trim().replace(/\/$/, '');
+  let host = rawHost.trim().replace(/\/$/, '');
 
+  // Fix malformed schemes like "http:localhost:8000", "http:/localhost:8000", "https:api.com"
+  host = host.replace(/^https?:?\/*(?!\/)/i, (match) => {
+    return match.toLowerCase().startsWith('https') ? 'https://' : 'http://';
+  });
+
+  // If still no scheme (e.g. "localhost:8000" or "api.metricsdash.com")
   if (!/^https?:\/\//i.test(host)) {
     if (host.startsWith('localhost') || host.startsWith('127.0.0.1')) {
       host = `http://${host}`;
@@ -38,6 +42,21 @@ export function resolveConfig(options: MetricsDashOptions): ResolvedMetricsDashC
       host = `https://${host}`;
     }
   }
+
+  try {
+    const parsed = new URL(host);
+    return parsed.origin;
+  } catch (e) {
+    return host;
+  }
+}
+
+export function resolveConfig(options: MetricsDashOptions): ResolvedMetricsDashConfig {
+  if (!options.publicSdkKey) {
+    throw new Error('[MetricsDash SDK] publicSdkKey est requise pour initialiser le SDK.');
+  }
+
+  const host = sanitizeHostUrl(options.host);
 
   return {
     publicSdkKey: options.publicSdkKey,
