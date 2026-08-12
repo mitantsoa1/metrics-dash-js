@@ -1,4 +1,4 @@
-# @metrics-dash/js
+# metrics-dash-js
 
 > SDK Client officiel JavaScript / TypeScript pour la télémesure et les analytics haute-fréquence **MetricsDash**.
 
@@ -17,11 +17,11 @@
 ## 📦 Installation
 
 ```bash
-npm install @metrics-dash/js
+npm install metrics-dash-js
 # ou
-yarn add @metrics-dash/js
+yarn add metrics-dash-js
 # ou
-pnpm add @metrics-dash/js
+pnpm add metrics-dash-js
 ```
 
 ---
@@ -31,7 +31,7 @@ pnpm add @metrics-dash/js
 Ajoutez le composant `<MetricsDashProvider />` dans votre `app/layout.tsx` :
 
 ```tsx
-import { MetricsDashProvider } from '@metrics-dash/js/react';
+import { MetricsDashProvider } from 'metrics-dash-js/react';
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -59,7 +59,7 @@ Enveloppez votre application dans `main.tsx` ou `App.tsx` :
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
-import { MetricsDashProvider } from '@metrics-dash/js/react';
+import { MetricsDashProvider } from 'metrics-dash-js/react';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
@@ -76,7 +76,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
 ### Utilisation du Hook dans vos composants :
 
 ```tsx
-import { useMetricsDash } from '@metrics-dash/js/react';
+import { useMetricsDash } from 'metrics-dash-js/react';
 
 export function CheckoutButton() {
   const { trackEvent } = useMetricsDash();
@@ -99,7 +99,7 @@ export function CheckoutButton() {
 
 ```html
 <script type="module">
-  import { MetricsDash } from 'https://cdn.jsdelivr.net/npm/@metrics-dash/js/+esm';
+  import { MetricsDash } from 'https://cdn.jsdelivr.net/npm/metrics-dash-js/+esm';
 
   MetricsDash.init({
     publicSdkKey: 'pk_live_votre_cle_publique',
