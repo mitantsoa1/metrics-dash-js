@@ -1,5 +1,5 @@
 {
-  "name": "@metrics-dash/js",
+  "name": "metrics-dash/js",
   "version": "1.0.0",
   "description": "SDK JavaScript/TypeScript client pour la télémesure et les analytics haute-fréquence MetricsDash",
   "main": "./dist/index.js",
