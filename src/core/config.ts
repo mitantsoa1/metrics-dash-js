@@ -43,6 +43,13 @@ export function sanitizeHostUrl(rawHost?: string): string {
     }
   }
 
+  // Automatic HTTPS upgrade if page is HTTPS and target is remote (not localhost)
+  if (typeof window !== 'undefined' && window.location.protocol === 'https:') {
+    if (host.startsWith('http://') && !host.startsWith('http://localhost') && !host.startsWith('http://127.0.0.1')) {
+      host = host.replace('http://', 'https://');
+    }
+  }
+
   try {
     const parsed = new URL(host);
     return parsed.origin;
