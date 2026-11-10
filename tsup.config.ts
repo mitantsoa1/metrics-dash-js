@@ -10,6 +10,6 @@ export default defineConfig({
   minify: true,
   external: ['react', 'react-dom', 'next', 'next/navigation'],
   banner: {
-    js: '/* @metrics-dash/js v1.0.0 */',
+    js: '/* @metrics-dash/js v1.1.1 */',
   },
 });

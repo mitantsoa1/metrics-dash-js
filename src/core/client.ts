@@ -5,9 +5,9 @@ import { PageviewMonitor } from '../monitors/pageviewMonitor';
 import { TimeMonitor } from '../monitors/timeMonitor';
 import { ClickMonitor } from '../monitors/clickMonitor';
 import { FormMonitor } from '../monitors/formMonitor';
+import { getSharedClient, setSharedClient } from './sharedClient';
 
 export class MetricsDashClient {
-  private static instance: MetricsDashClient | null = null;
 
   public readonly config: ResolvedMetricsDashConfig;
   public readonly sessionManager: SessionManager;
@@ -75,14 +75,16 @@ export class MetricsDashClient {
   }
 
   public static init(options: MetricsDashOptions): MetricsDashClient {
-    if (!MetricsDashClient.instance) {
-      MetricsDashClient.instance = new MetricsDashClient(options);
+    let client = getSharedClient<MetricsDashClient>();
+    if (!client) {
+      client = new MetricsDashClient(options);
+      setSharedClient(client);
     }
-    return MetricsDashClient.instance;
+    return client;
   }
 
   public static getInstance(): MetricsDashClient | null {
-    return MetricsDashClient.instance;
+    return getSharedClient<MetricsDashClient>();
   }
 
   public trackPageview(path?: string): void {
@@ -108,6 +110,6 @@ export class MetricsDashClient {
     this.formMonitor.destroy();
     this.timeMonitor.destroy();
     this.transport.destroy();
-    MetricsDashClient.instance = null;
+    setSharedClient<MetricsDashClient>(null);
   }
 }
