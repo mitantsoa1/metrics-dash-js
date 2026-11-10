@@ -7,7 +7,12 @@ export interface MetricsDashOptions {
   autoTime?: boolean;
   inactivityThresholdSeconds?: number;
   bounceTimeThresholdSeconds?: number;
+  /** Délai max avant l'envoi d'un lot (défaut 5000 ms) */
   batchIntervalMs?: number;
+  /** Taille de lot déclenchant un envoi immédiat (défaut 10) */
+  batchSize?: number;
+  /** Vérifie la clé auprès du serveur à l'initialisation (défaut true) */
+  verifyKey?: boolean;
   debug?: boolean;
 }
 
@@ -21,6 +26,8 @@ export interface ResolvedMetricsDashConfig {
   inactivityThresholdSeconds: number;
   bounceTimeThresholdSeconds: number;
   batchIntervalMs: number;
+  batchSize: number;
+  verifyKey: boolean;
   debug: boolean;
 }
 
@@ -74,7 +81,9 @@ export function resolveConfig(options: MetricsDashOptions): ResolvedMetricsDashC
     autoTime: options.autoTime ?? true,
     inactivityThresholdSeconds: options.inactivityThresholdSeconds ?? 30,
     bounceTimeThresholdSeconds: options.bounceTimeThresholdSeconds ?? 10,
-    batchIntervalMs: options.batchIntervalMs ?? 2000,
+    batchIntervalMs: options.batchIntervalMs ?? 5000,
+    batchSize: options.batchSize ?? 10,
+    verifyKey: options.verifyKey ?? true,
     debug: options.debug ?? false,
   };
 }

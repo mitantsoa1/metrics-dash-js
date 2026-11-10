@@ -22,7 +22,8 @@
   ],
   "scripts": {
     "build": "npx --package=typescript --package=tsup tsup",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "test": "node --experimental-transform-types --test src/transport/beaconTransport.test.ts"
   },
   "keywords": [
     "metrics-dash",

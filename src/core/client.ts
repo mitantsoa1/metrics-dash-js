@@ -27,6 +27,10 @@ export class MetricsDashClient {
       this.sessionManager.getSessionId()
     );
 
+    if (this.config.verifyKey) {
+      void this.verifyKey();
+    }
+
     this.timeMonitor = new TimeMonitor(this.config, this.transport);
 
     this.clickMonitor = new ClickMonitor(this.config, this.transport, () => {
@@ -45,6 +49,28 @@ export class MetricsDashClient {
         visitorId: this.sessionManager.getVisitorId(),
         sessionId: this.sessionManager.getSessionId(),
       });
+    }
+  }
+
+  /**
+   * Vérifie la clé publique auprès du serveur (PU-26), sans bloquer l'initialisation.
+   * Clé refusée : message explicite en console et envoi désactivé. Réseau indisponible : on laisse faire.
+   */
+  private async verifyKey(): Promise<void> {
+    if (typeof fetch === 'undefined') return;
+    try {
+      const res = await fetch(`${this.config.host}/api/v1/sdk/verify`, {
+        headers: { 'X-SDK-Key': this.config.publicSdkKey },
+      });
+      if (res.status === 401) {
+        console.error(
+          `[MetricsDash SDK] La clé publique "${this.config.publicSdkKey.slice(0, 12)}…" est invalide ou révoquée. ` +
+            'Le tracking est désactivé : copiez la clé SDK affichée dans Instances & Clés.'
+        );
+        this.transport.disable();
+      }
+    } catch {
+      // serveur injoignable : la vérification sera ignorée, le SDK réessaiera à l'envoi
     }
   }
 
@@ -73,7 +99,7 @@ export class MetricsDashClient {
   }
 
   public flush(): void {
-    this.transport.flush();
+    void this.transport.flush();
   }
 
   public destroy(): void {
